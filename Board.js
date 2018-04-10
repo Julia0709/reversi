@@ -30,30 +30,41 @@ class Board {
 
   updateBoard(x, y, player) {
     let disc = player === 'player1' ? 'x' : 'o';
-    this.moves[x][y] = disc;
-    const opponent = disk === 'x' ? 'o' : 'x';
-    this.reverseDisc(x, y, disc, opponent);
-    toString();
+    console.log(`x: ${x}, y: ${y}, disc: ${disc}`);
+    this.moves[y][x] = disc;
+
+    for (let i = -1; i <= 1; i++) {
+      for (let j = -1; j <= 1; j++) {
+        this.reverseDisc(x, y, i, j, disc);
+      }
+    }
+
+    this.toString();
   }
 
-  reverseDisc(x, y, disc, opponent) {
-    const my = moves[y];
+  reverseDisc(x, y, dx, dy, disc) {
+    const opponent = disc === 'x' ? 'o' : 'x';
+    x += dx;
+    y += dy;
+
+    const my = this.moves[y];
     if (!my) {
-      return;
+      return false;
     }
     const m = my[x];
-    if (!m) {
-      return;
+    if (!m || m === ' ') {
+      return false;
     }
+
     if (m === disc) {
-      // TODO
-      return;
+      return true;
     }
+
     if (m === opponent) {
-      this.reverseDisc(x - 1, y);
-      this.reverseDisc(x + 1, y);
-      this.reverseDisc(x, y - 1);
-      this.reverseDisc(x, y + 1);
+      if (this.reverseDisc(x, y, dx, dy, disc)) {
+        my[x] = disc;
+        return true;
+      }
     }
   }
 }

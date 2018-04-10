@@ -25,12 +25,11 @@ const coordinateMap = {
 function getInput() {
   console.log(board.toString());
 
-  const message = `${player}, enter your next move (ex: d3)\n`;
+  const message = `${player}, enter your move (ex: d3)\n`;
   rl.question(message, answer => {
-    const [y, x] = answer.split('');
-    console.log(`x: ${x}, y: ${y}`);
+    const [x, y] = answer.split('');
 
-    board.updateBoard(Number(x), coordinateMap[y], player);
+    board.updateBoard(coordinateMap[x], Number(y), player);
     player = player === 'player1' ? 'player2' : 'player1';
 
     getInput();
