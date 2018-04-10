@@ -30,17 +30,19 @@ class Board {
 
   updateBoard(x, y, player) {
     let disc = player === 'player1' ? 'x' : 'o';
-    console.log(`x: ${x}, y: ${y}, disc: ${disc}`);
     this.moves[y][x] = disc;
 
     for (let i = -1; i <= 1; i++) {
       for (let j = -1; j <= 1; j++) {
-        this.reverseDisc(x, y, i, j, disc);
+        this.checkDisc(x, y, i, j, disc);
       }
     }
   }
 
   isReversible(x, y, player) {
+    if (this.moves[y][x] !== ' ') {
+      return false;
+    }
     let disc = player === 'player1' ? 'x' : 'o';
     for (let i = -1; i <= 1; i++) {
       for (let j = -1; j <= 1; j++) {
@@ -52,7 +54,7 @@ class Board {
     }
   }
 
-  checkDisc(x, y, dx, dy, disc) {
+  checkDisc(x, y, dx, dy, disc, second) {
     const opponent = disc === 'x' ? 'o' : 'x';
     x += dx;
     y += dy;
@@ -71,33 +73,10 @@ class Board {
     }
 
     if (m === opponent) {
-      if (this.reverseDisc(x, y, dx, dy, disc)) {
-        return true;
-      }
-    }
-  }
-
-  reverseDisc(x, y, dx, dy, disc) {
-    const opponent = disc === 'x' ? 'o' : 'x';
-    x += dx;
-    y += dy;
-
-    const my = this.moves[y];
-    if (!my) {
-      return false;
-    }
-    const m = my[x];
-    if (!m || m === ' ') {
-      return false;
-    }
-
-    if (m === disc) {
-      return true;
-    }
-
-    if (m === opponent) {
-      if (this.reverseDisc(x, y, dx, dy, disc)) {
-        my[x] = disc;
+      if (this.checkDisc(x, y, dx, dy, disc)) {
+        if (second) {
+          my[x] = disc;
+        }
         return true;
       }
     }
