@@ -29,8 +29,12 @@ function getInput() {
   rl.question(message, answer => {
     const [x, y] = answer.split('');
 
-    board.updateBoard(coordinateMap[x], Number(y), player);
-    player = player === 'player1' ? 'player2' : 'player1';
+    if (board.isReversible(coordinateMap[x], Number(y), player)) {
+      board.updateBoard(coordinateMap[x], Number(y), player);
+      player = player === 'player1' ? 'player2' : 'player1';
+    } else {
+      console.log(`Oops! You cannot make ${answer}. Try again.`);
+    }
 
     getInput();
   });
