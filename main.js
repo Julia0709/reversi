@@ -3,9 +3,6 @@
 const Board = require('./Board');
 const board = new Board();
 
-const Disc = require('./Disc');
-const disc = new Disc();
-
 const readline = require('readline');
 const rl = readline.createInterface({
   input: process.stdin,
@@ -32,19 +29,23 @@ function getInput() {
   rl.question(message, answer => {
     const [a, b] = answer.split('');
 
-    const x = coordinateMap.a;
+    const x = coordinateMap[a];
     const y = Number(b);
-    const d = disc.switchDisc(player);
-    console.log(`x: ${x}, y: ${y}, d: ${d}`);
-    if (board.isAvailable(x, y, d)) {
-      board.updateBoard(x, y, d);
-      player = player === 'player1' ? 'player2' : 'player1';
+    const first = player === 'player1';
+
+    if (board.isAvailable(x, y, first)) {
+      board.updateBoard(x, y, first);
+      player = switchPlayer(player);
     } else {
-      console.log(`Oops! You cannot make ${answer}. Try again.`);
+      console.log(`Oops! Cannot make ${answer}, try again.`);
     }
 
     getInput();
   });
+}
+
+function switchPlayer(player) {
+  return player === 'player1' ? 'player2' : 'player1';
 }
 
 getInput();

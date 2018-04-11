@@ -1,5 +1,8 @@
 'use strict';
 
+const Disc = require('./Disc');
+const disc = new Disc();
+
 class Board {
   constructor() {
     this.moves = [
@@ -28,24 +31,14 @@ class Board {
     return board;
   }
 
-  isAvailable(x, y, disc) {
-    console.log(`x: ${x}, y: ${y}, d: ${disc}, moves: ${this.moves[y][x]}`);
+  isAvailable(x, y, first) {
+    const d = disc.switchDisc(first);
     if (this.moves[y][x] !== ' ') {
       return false;
     }
     for (let i = -1; i <= 1; i++) {
       for (let j = -1; j <= 1; j++) {
-        console.log(
-          `LOOP${i} ${j} x: ${x}, y: ${y}, d: ${disc}, boolean: ${this.checkDisc(
-            x,
-            y,
-            i,
-            j,
-            disc,
-            true,
-          )}`,
-        );
-        if (this.checkDisc(x, y, i, j, disc, true)) {
+        if (this.turnDisk(x, y, i, j, d, true, true)) {
           return true;
         }
       }
@@ -53,17 +46,18 @@ class Board {
     return false;
   }
 
-  updateBoard(x, y, disc) {
-    this.moves[y][x] = disc;
+  updateBoard(x, y, first) {
+    const d = disc.switchDisc(first);
+    this.moves[y][x] = d;
 
     for (let i = -1; i <= 1; i++) {
       for (let j = -1; j <= 1; j++) {
-        this.checkDisc(x, y, i, j, disc, false);
+        this.turnDisk(x, y, i, j, d, true, false);
       }
     }
   }
 
-  checkDisc(x, y, dx, dy, disc, first) {
+  turnDisk(x, y, dx, dy, d, first, inspect) {
     x += dx;
     y += dy;
 
@@ -76,13 +70,13 @@ class Board {
       return false;
     }
 
-    if (m === disc) {
+    if (!first && m === d) {
       return true;
     }
 
-    if (m !== disc && this.checkDisc(x, y, dx, dy, disc, first)) {
-      if (!first) {
-        my[x] = disc;
+    if (m !== d && this.turnDisk(x, y, dx, dy, d, false, inspect)) {
+      if (!inspect) {
+        my[x] = d;
       }
       return true;
     }

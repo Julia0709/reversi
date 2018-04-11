@@ -1,8 +1,8 @@
 'use strict';
 
 class Disc {
-  switchDisc(player) {
-    return player === 'player1' ? 'x' : 'o';
+  switchDisc(turn) {
+    return 'x' || 'o';
   }
 }
 module.exports = Disc;
