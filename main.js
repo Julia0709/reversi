@@ -32,6 +32,7 @@ function getInput() {
     const x = coordinateMap[a];
     const y = Number(b);
     const first = player === 'player1';
+    console.log(`first: ${first}`);
 
     if (board.isAvailable(x, y, first)) {
       board.updateBoard(x, y, first);

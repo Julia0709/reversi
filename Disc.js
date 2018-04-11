@@ -1,8 +1,12 @@
 'use strict';
 
 class Disc {
+  format() {
+    return ' ';
+  }
+
   switchDisc(turn) {
-    return 'x' || 'o';
+    return turn ? 'x' : 'o';
   }
 }
 module.exports = Disc;

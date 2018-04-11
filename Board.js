@@ -5,16 +5,24 @@ const disc = new Disc();
 
 class Board {
   constructor() {
-    this.moves = [
-      [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-      [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-      [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-      [' ', ' ', ' ', 'x', 'o', ' ', ' ', ' '],
-      [' ', ' ', ' ', 'o', 'x', ' ', ' ', ' '],
-      [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-      [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-      [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    this.moves = this.createNewBoard();
+  }
+
+  createNewBoard() {
+    const row = 8;
+    const initialPositions = [
+      { x: 3, y: 3, first: true },
+      { x: 3, y: 4, first: false },
+      { x: 4, y: 3, first: false },
+      { x: 4, y: 4, first: true },
     ];
+    const grid = Array.from(new Array(row), () =>
+      new Array(row).fill(disc.format()),
+    );
+    initialPositions.forEach(position => {
+      grid[position.x][position.y] = disc.switchDisc(position.first);
+    });
+    return grid;
   }
 
   toString() {
