@@ -33,12 +33,13 @@ function getInput() {
     const y = Number(b);
     const isFirst = player === 'player1';
 
-    if (x && y && board.isAvailable(x, y, isFirst)) {
-      board.updateBoard(x, y, isFirst);
-      player = switchPlayer(player);
-    } else {
+    if (isNaN(x) || isNaN(y) || !board.isAvailable(x, y, isFirst)) {
       console.log(`Oops! Cannot make ${answer}, try again.`);
+      return getInput();
     }
+
+    board.updateBoard(x, y, isFirst);
+    player = switchPlayer(player);
 
     getInput();
   });
