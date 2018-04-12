@@ -1,34 +1,36 @@
 'use strict';
 
 const Disc = require('./Disc');
-const disc = new Disc();
 
 class Board {
   constructor() {
-    this.moves = this.createNewBoard();
+    this.grid = this.createNewBoard();
   }
 
   createNewBoard() {
     const row = 8;
-    const initialPositions = [
-      { x: 3, y: 3, first: true },
-      { x: 3, y: 4, first: false },
-      { x: 4, y: 3, first: false },
-      { x: 4, y: 4, first: true },
-    ];
-    const grid = Array.from(new Array(row), () =>
-      new Array(row).fill(disc.format()),
-    );
-    initialPositions.forEach(position => {
-      grid[position.x][position.y] = disc.switchDisc(position.first);
-    });
+    const grid = new Array(row);
+    for (let i = 0; i < row; i++) {
+      grid[i] = new Array(row);
+      const g = grid[i];
+      for (let j = 0; j < row; j++) {
+        g[j] = new Disc();
+        const d = g[j];
+        if ((i === 3 && j === 3) || (i === 4 && j === 4)) {
+          d.putFirst();
+        }
+        if ((i === 3 && j === 4) || (i === 4 && j === 3)) {
+          d.putSecond();
+        }
+      }
+    }
     return grid;
   }
 
   toString() {
     let board = '| |a|b|c|d|e|f|g|h|\n';
-    for (let i = 0; i < this.moves.length; i++) {
-      const my = this.moves[i];
+    for (let i = 0; i < this.grid.length; i++) {
+      const my = this.grid[i];
       board += `|${i}|`;
       for (let j = 0; j < my.length; j++) {
         const m = my[j];
@@ -39,14 +41,13 @@ class Board {
     return board;
   }
 
-  isAvailable(x, y, first) {
-    const d = disc.switchDisc(first);
-    if (this.moves[y][x] !== ' ') {
+  isAvailable(x, y, isFirst) {
+    if (!this.grid[y][x].isBlank()) {
       return false;
     }
     for (let i = -1; i <= 1; i++) {
       for (let j = -1; j <= 1; j++) {
-        if (this.turnDisk(x, y, i, j, d, true, true)) {
+        if (this.turnDisk(x, y, i, j, isFirst, true, true)) {
           return true;
         }
       }
@@ -54,37 +55,40 @@ class Board {
     return false;
   }
 
-  updateBoard(x, y, first) {
-    const d = disc.switchDisc(first);
-    this.moves[y][x] = d;
+  updateBoard(x, y, isFirst) {
+    const disc = this.grid[y][x];
+    isFirst ? disc.putFirst() : disc.putSecond();
 
     for (let i = -1; i <= 1; i++) {
       for (let j = -1; j <= 1; j++) {
-        this.turnDisk(x, y, i, j, d, true, false);
+        this.turnDisk(x, y, i, j, isFirst, true, false);
       }
     }
   }
 
-  turnDisk(x, y, dx, dy, d, first, inspect) {
+  turnDisk(x, y, dx, dy, isFirst, first, inspect) {
     x += dx;
     y += dy;
 
-    const my = this.moves[y];
-    if (!my) {
+    const g = this.grid[y];
+    if (!g) {
       return false;
     }
-    const m = my[x];
-    if (!m || m === ' ') {
+    const disc = g[x];
+    if (!disc || disc.isBlank()) {
       return false;
     }
 
-    if (!first && m === d) {
+    if (isFirst === disc.isFirst()) {
       return true;
     }
 
-    if (m !== d && this.turnDisk(x, y, dx, dy, d, false, inspect)) {
+    if (
+      isFirst === disc.isSecond() &&
+      this.turnDisk(x, y, dx, dy, isFirst, false, inspect)
+    ) {
       if (!inspect) {
-        my[x] = d;
+        disc.switchDisc();
       }
       return true;
     }

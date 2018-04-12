@@ -31,11 +31,10 @@ function getInput() {
 
     const x = coordinateMap[a];
     const y = Number(b);
-    const first = player === 'player1';
-    console.log(`first: ${first}`);
+    const isFirst = player === 'player1';
 
-    if (board.isAvailable(x, y, first)) {
-      board.updateBoard(x, y, first);
+    if (x && y && board.isAvailable(x, y, isFirst)) {
+      board.updateBoard(x, y, isFirst);
       player = switchPlayer(player);
     } else {
       console.log(`Oops! Cannot make ${answer}, try again.`);
