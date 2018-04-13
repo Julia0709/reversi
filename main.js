@@ -25,13 +25,26 @@ const coordinateMap = {
 function getInput() {
   console.log(board.toString());
 
+  const isFirst = player === 'player1';
+
+  if (!board.isPracticable(isFirst)) {
+    if (!board.isPracticable(!isFirst)) {
+      console.log('Game finished!');
+      return showResult();
+    }
+    console.log(`${player} has to pass.`);
+    player = switchPlayer(player);
+    return getInput();
+  }
+
   const message = `${player}, enter your move (ex: d3)\n`;
   rl.question(message, answer => {
     const [a, b] = answer.split('');
 
     const x = coordinateMap[a];
     const y = Number(b);
-    const isFirst = player === 'player1';
+
+    console.log(`[main.js] x: ${x}, y: ${y}, isFirst: ${isFirst}`);
 
     if (isNaN(x) || isNaN(y) || !board.isAvailable(x, y, isFirst)) {
       console.log(`Oops! Cannot make ${answer}, try again.`);
@@ -47,6 +60,10 @@ function getInput() {
 
 function switchPlayer(player) {
   return player === 'player1' ? 'player2' : 'player1';
+}
+
+function showResult() {
+  console.log(`＼(^o^)／`);
 }
 
 getInput();

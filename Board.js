@@ -2,13 +2,14 @@
 
 const Disc = require('./Disc');
 
+const row = 8;
+
 class Board {
   constructor() {
     this.grid = this.createNewBoard();
   }
 
   createNewBoard() {
-    const row = 8;
     const grid = new Array(row);
     for (let i = 0; i < row; i++) {
       grid[i] = new Array(row);
@@ -29,16 +30,25 @@ class Board {
 
   toString() {
     let board = '| |a|b|c|d|e|f|g|h|\n';
-    for (let i = 0; i < this.grid.length; i++) {
-      const my = this.grid[i];
+    for (let i = 0; i < row; i++) {
       board += `|${i}|`;
-      for (let j = 0; j < my.length; j++) {
-        const m = my[j];
-        board += `${m}|`;
+      for (let j = 0; j < row; j++) {
+        board += `${this.grid[i][j]}|`;
       }
       board += '\n';
     }
     return board;
+  }
+
+  isPracticable(isFirst) {
+    for (let i = 0; i < row; i++) {
+      for (let j = 0; j < row; j++) {
+        if (this.isAvailable(i, j, isFirst)) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   isAvailable(x, y, isFirst) {
@@ -52,6 +62,7 @@ class Board {
         }
       }
     }
+    console.log(`[isAvailable()] x: ${x}, y: ${y}, isFirst: ${isFirst}`);
     return false;
   }
 
@@ -80,7 +91,7 @@ class Board {
     }
 
     if (isFirst === disc.isFirst()) {
-      return true;
+      return !first;
     }
 
     if (
