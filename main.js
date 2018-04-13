@@ -9,7 +9,9 @@ const rl = readline.createInterface({
   output: process.stdout,
 });
 
-let player = 'player1';
+const player1 = 'player1';
+const player2 = 'player2';
+let currentPlayer = player1;
 
 const coordinateMap = {
   a: 0,
@@ -25,19 +27,18 @@ const coordinateMap = {
 function getInput() {
   console.log(board.toString());
 
-  const isFirst = player === 'player1';
+  const isFirst = currentPlayer === player1;
 
   if (!board.isPracticable(isFirst)) {
     if (!board.isPracticable(!isFirst)) {
-      console.log('Game finished!');
       return showResult();
     }
-    console.log(`${player} has to pass.`);
-    player = switchPlayer(player);
+    console.log(`${currentPlayer} has to pass.`);
+    currentPlayer = switchPlayer(currentPlayer);
     return getInput();
   }
 
-  const message = `${player}, enter your move (ex: d3)\n`;
+  const message = `${currentPlayer}, enter your move (ex: d3)\n`;
   rl.question(message, answer => {
     const [a, b] = answer.split('');
 
@@ -52,18 +53,29 @@ function getInput() {
     }
 
     board.updateBoard(x, y, isFirst);
-    player = switchPlayer(player);
+    currentPlayer = switchPlayer(currentPlayer);
 
     getInput();
   });
 }
 
-function switchPlayer(player) {
-  return player === 'player1' ? 'player2' : 'player1';
+function switchPlayer(currentPlayer) {
+  return currentPlayer === player1 ? player2 : player1;
 }
 
 function showResult() {
-  console.log(`＼(^o^)／`);
+  const { sum1, sum2 } = board.countDisc();
+  const message = '';
+  if (sum1 > sum2) {
+    message = `${player1} Win!`;
+  } else if (sum < sum2) {
+    message = `${player2} Win!`;
+  } else {
+    message = `Draw`;
+  }
+  console.log(
+    `\n＼(^o^)／ Game finished ＼(^o^)／\n${player1}: ${sum1} vs ${player2}: ${sum2}\n\n${message}`,
+  );
 }
 
 getInput();

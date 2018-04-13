@@ -104,5 +104,21 @@ class Board {
       return true;
     }
   }
+
+  countDisc() {
+    const sum1 = 0;
+    const sum2 = 0;
+    for (let i = 0; i < row; i++) {
+      for (let j = 0; j < row; j++) {
+        const disc = this.grid[i][j];
+        if (disc.isFirst()) {
+          sum1++;
+        } else if (disc.isSecond()) {
+          sum2++;
+        }
+      }
+    }
+    return { sum1, sum2 };
+  }
 }
 module.exports = Board;
