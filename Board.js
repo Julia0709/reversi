@@ -3,6 +3,10 @@
 const Disc = require('./Disc');
 
 const row = 8;
+const initDiscMap = {
+  first: [{ i: 3, j: 3 }, { i: 4, j: 4 }],
+  second: [{ i: 3, j: 4 }, { i: 4, j: 3 }],
+};
 
 class Board {
   constructor() {
@@ -16,27 +20,31 @@ class Board {
       const g = grid[i];
       for (let j = 0; j < row; j++) {
         g[j] = new Disc();
-        const d = g[j];
-        if ((i === 3 && j === 3) || (i === 4 && j === 4)) {
-          d.putFirst();
-        }
-        if ((i === 3 && j === 4) || (i === 4 && j === 3)) {
-          d.putSecond();
-        }
       }
+    }
+    for (const { i, j } of initDiscMap.first) {
+      grid[j][i].putFirst();
+    }
+    for (const { i, j } of initDiscMap.second) {
+      grid[j][i].putSecond();
     }
     return grid;
   }
 
   toString() {
-    let board = '| |a|b|c|d|e|f|g|h|\n';
-    for (let i = 0; i < row; i++) {
-      board += `|${i}|`;
-      for (let j = 0; j < row; j++) {
-        board += `${this.grid[i][j]}|`;
-      }
-      board += '\n';
-    }
+    // let board = '| |a|b|c|d|e|f|g|h|\n';
+    // for (let i = 0; i < row; i++) {
+    //   board += `|${i}|`;
+    //   for (let j = 0; j < row; j++) {
+    //     board += `${this.grid[i][j]}|`;
+    //   }
+    //   board += '\n';
+    // }
+    const board = this.grid.reduce(
+      (str, g, i) =>
+        g.reduce((s, disc) => `${s}${disc}|`, `${str}|${i}|`) + `\n`,
+      '| |a|b|c|d|e|f|g|h|\n',
+    );
     return board;
   }
 
@@ -51,21 +59,13 @@ class Board {
     return false;
   }
 
-  isAvailable(x, y, isFirst) {
-    if (!this.grid[y][x].isBlank()) {
-      return false;
-    }
-    for (let i = -1; i <= 1; i++) {
-      for (let j = -1; j <= 1; j++) {
-        if (this.turnDisk(x, y, i, j, isFirst, true, true)) {
-          return true;
-        }
-      }
-    }
-    return false;
-  }
-
   updateBoard(x, y, isFirst) {
+    if (!this.isAvailable(x, y, isFirst)) {
+      throw new Error(
+        `Cannot update board, {x, y}={${x}, ${y}} is not available.`,
+      );
+    }
+
     const disc = this.grid[y][x];
     isFirst ? disc.putFirst() : disc.putSecond();
 
@@ -74,6 +74,29 @@ class Board {
         this.turnDisk(x, y, i, j, isFirst, true, false);
       }
     }
+  }
+
+  isAvailable(x, y, isFirst) {
+    const g = this.grid[y];
+    if (!g) {
+      return false;
+    }
+    const disc = g[x];
+    if (!disc || !disc.isBlank()) {
+      return false;
+    }
+
+    for (let i = -1; i <= 1; i++) {
+      for (let j = -1; j <= 1; j++) {
+        if (i === 0 && j === 0) {
+          continue;
+        }
+        if (this.turnDisk(x, y, i, j, isFirst, true, true)) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   turnDisk(x, y, dx, dy, isFirst, first, inspect) {
@@ -102,6 +125,8 @@ class Board {
       }
       return true;
     }
+
+    return false;
   }
 
   countDisc() {

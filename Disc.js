@@ -43,8 +43,4 @@ class Disc {
     }
   }
 }
-Disc.blank = blank;
-Disc.first = first;
-Disc.second = second;
-
 module.exports = Disc;

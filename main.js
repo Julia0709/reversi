@@ -45,7 +45,7 @@ function getInput() {
     const x = coordinateMap[a];
     const y = Number(b);
 
-    if (isNaN(x) || isNaN(y) || !board.isAvailable(x, y, isFirst)) {
+    if (!board.isAvailable(x, y, isFirst)) {
       console.log(`Oops! Cannot make ${answer}, try again.`);
       return getInput();
     }
@@ -66,7 +66,7 @@ function showResult() {
   let message = '';
   if (sum1 > sum2) {
     message = `${player1} Win!`;
-  } else if (sum < sum2) {
+  } else if (sum1 < sum2) {
     message = `${player2} Win!`;
   } else {
     message = `Draw`;
