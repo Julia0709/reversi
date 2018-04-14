@@ -62,7 +62,6 @@ class Board {
         }
       }
     }
-    console.log(`[isAvailable()] x: ${x}, y: ${y}, isFirst: ${isFirst}`);
     return false;
   }
 
@@ -106,8 +105,8 @@ class Board {
   }
 
   countDisc() {
-    const sum1 = 0;
-    const sum2 = 0;
+    let sum1 = 0;
+    let sum2 = 0;
     for (let i = 0; i < row; i++) {
       for (let j = 0; j < row; j++) {
         const disc = this.grid[i][j];
@@ -118,7 +117,10 @@ class Board {
         }
       }
     }
-    return { sum1, sum2 };
+    return {
+      sum1,
+      sum2,
+    };
   }
 }
 module.exports = Board;
